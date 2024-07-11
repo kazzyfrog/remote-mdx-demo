@@ -1,4 +1,4 @@
-import { MDXRemote } from "next-mdx-remote/rsc";
+import { compileMDX, MDXRemote } from "next-mdx-remote/rsc";
 
 const ExampleComponent = () => <p>Example Component</p>;
 const components = { ExampleComponent };
@@ -10,9 +10,15 @@ export default async function CompileMDXTestPage({
 }) {
   const postData = await getPostData(params.slug);
 
+  const { content, frontmatter } = await compileMDX<{ title: string }>({
+    source: postData,
+    options: { parseFrontmatter: true },
+  });
+
   return (
     <div>
-      <MDXRemote source={postData} components={components} />
+      <h1>{frontmatter.title}</h1>
+      {content}
     </div>
   );
 }
